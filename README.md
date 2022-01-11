@@ -65,11 +65,7 @@ ansible-playbook -i inventory docker-build-push.yml
 
 ## Result
 
+Now, we have our docker image build and pushed into our docker Hub account with the tags.
 
 ![image](https://user-images.githubusercontent.com/93197553/148968145-cb04f6fd-eef8-4bfe-9608-c1925f7925db.png)
-
-
-
-
-
 
