@@ -41,7 +41,7 @@
         username: "{{ docker_username }}"
         password: "{{ docker_password }}"
 
-    - name: "Build - Docker image from Dockerfile"
+    - name: "Build Docker image from Dockerfile"
       when: git_status.changed == true
       docker_image:
         build:
@@ -50,6 +50,17 @@
         tag: "{{ item }}"
         push: yes
         source: build
+      with_items:
+        - "latest"
+        - "{{ git_status.after }}"
+        - "{{ version }}"
+
+    - name: "Removing Images From remote Server"
+      when: git_status.changed == true
+      docker_image:
+        name: "{{ docker_username }}/{{image}}"
+        tag: "{{ item }}"
+        state: absent
       with_items:
         - "latest"
         - "{{ git_status.after }}"
