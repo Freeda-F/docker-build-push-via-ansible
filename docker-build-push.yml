@@ -1,0 +1,56 @@
+---
+- name: "Building docker image"
+  hosts: build
+  become: true
+  vars:
+    git_url: "https://github.com/Freeda-F/docker-flask-app.git"
+    docker_password: "###########"
+    docker_username: "freedafrancis"
+    image: "devops-flaskapp"
+    version: "v1"
+
+  tasks:
+    - name: "Install packages for flaskApp"
+      yum:
+        name:
+          - docker
+          - git
+          - python2-pip
+        state: present
+
+    - name: "Build - Sarting Docker Service"
+      service:
+        name: docker
+        state: restarted
+        enabled: true
+
+    - name: "Build - Installing Docker Client For Python"
+      pip:
+        name: docker-py
+        state: present
+
+    - name: "Build - Cloning Github Repository {{ git_url }}"
+      git:
+        repo: "{{ git_url }}"
+        dest: "/var/flaskapp/"
+      register: git_status
+
+    - name: "Login to docker hub"
+      when: git_status.changed == true
+      docker_login:
+        username: "{{ docker_username }}"
+        password: "{{ docker_password }}"
+
+    - name: "Build - Docker image from Dockerfile"
+      when: git_status.changed == true
+      docker_image:
+        build:
+          path: "/var/flaskapp/"
+        name: "{{ docker_username }}/{{ image }}"
+        tag: "{{ item }}"
+        push: yes
+        source: build
+      with_items:
+        - "latest"
+        - "{{ git_status.after }}"
+        - "{{ version }}"
