@@ -4,6 +4,8 @@ In this demo, we will be installing docker and building a docker image for an Fl
 
 ## Architecture
 
+![image](https://user-images.githubusercontent.com/93197553/148982211-1d652b5a-cf68-4ed1-9fc4-ef8d760b381c.png)
+
 
 ## Overview
 
